@@ -10,6 +10,7 @@ public class Reservations {
 	private Date fromDate;
 	private Date toDate;
 	private Date dateEntered;
+	
 	public Long getReservationId() {
 		return reservationId;
 	}
