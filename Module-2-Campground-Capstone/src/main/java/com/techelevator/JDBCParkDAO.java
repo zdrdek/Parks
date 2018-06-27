@@ -36,8 +36,12 @@ public class JDBCParkDAO implements ParkDAO {
 		if (results.next()) {
 			thePark = mapRowToPark(results);
 		}
-		System.out.println("Location:           " + thePark.getLocation()
-						   "  Arches:");
+		System.out.println('\n' + thePark.getName() + " National Park"+ '\n' +
+						   "Location:                         " + thePark.getLocation() + '\n' +
+						   "Established:                      " + thePark.getEstablishDate() + '\n' + 
+						   "Area:                             " + thePark.getArea() + " sq km " + '\n' + 
+						   "Annual Visitors:                  " + thePark.getVisitors() + '\n' + '\n' +
+						   thePark.getDescription());
 		
 	}
 //	
