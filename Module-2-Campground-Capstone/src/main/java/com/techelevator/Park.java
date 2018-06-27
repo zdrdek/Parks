@@ -10,6 +10,8 @@ public class Park {
 	private Date establishDate;
 	private int area;
 	private int visitors;
+	private String description;
+	
 	public Long getParkId() {
 		return parkId;
 	}
@@ -45,6 +47,12 @@ public class Park {
 	}
 	public void setVisitors(int visitors) {
 		this.visitors = visitors;
+	}
+	public String getDescription() {
+		return description;
+	}
+	public void setDescription(String description) {
+		this.description = description;
 	}
 
 	

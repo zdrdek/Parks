@@ -28,6 +28,50 @@ public class JDBCParkDAO implements ParkDAO {
 		return parkList;
 	}
 	
+	@Override
+	public String getLocation() {
+		String findLocation = ("SELECT location " + 
+				"FROM park " + 
+				"WHERE park_id = 1");
+		SqlRowSet results = jdbcTemplate.queryForRowSet(findLocation);
+		String location = results.toString();
+		return location;
+	}
+	
+	@Override
+	public String getDateEstablished() {
+		String findDateEstablished = ("SELECT establish_date " + 
+				"FROM park " + 
+				"WHERE park_id = 1");
+		SqlRowSet results = jdbcTemplate.queryForRowSet(findDateEstablished);
+		String dateEstablished = results.toString();
+		dateEstablished = dateEstablished.concat("/" + dateEstablished.substring(0, 4));
+		dateEstablished = dateEstablished.substring(5).replace('-', '/');
+		return dateEstablished;
+	}
+	
+	@Override
+	public String getArea() {
+		String findArea = ("SELECT area " + 
+				"FROM park " + 
+				"WHERE park_id = 1");
+		SqlRowSet results = jdbcTemplate.queryForRowSet(findArea);
+		String area = results.toString();
+		ArrayList<Character> arealist = new ArrayList<>();
+		for (int i = 0; i < area.length(); i++) {
+			arealist.add(area.charAt(i));
+		}
+		int size = area.length();
+		int commas = size / 3;
+		if (size % 3 == 0 && size > 3) {
+			for (int i = 3; i < size; i = i + 3) {
+				arealist.add(i, ',');
+			}
+		}
+		return area;
+		
+	}
+	
 	
 
 }
