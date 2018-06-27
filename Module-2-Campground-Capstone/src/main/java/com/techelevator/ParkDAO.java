@@ -6,10 +6,6 @@ public interface ParkDAO {
 
 	public List<Park> getAvailableParks();
 
-	public String getLocation(int parkID);
-	
-	public String getDateEstablished();
-
-	public String getArea();
+	public void getParkInfo(int id);
 	
 }
