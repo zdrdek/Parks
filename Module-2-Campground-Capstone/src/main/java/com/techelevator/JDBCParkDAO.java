@@ -29,13 +29,15 @@ public class JDBCParkDAO implements ParkDAO {
 	}
 	
 	@Override
-	public String getLocation() {
+	public String getLocation(int parkID) {
 		String findLocation = ("SELECT location " + 
 				"FROM park " + 
 				"WHERE park_id = 1");
 		SqlRowSet results = jdbcTemplate.queryForRowSet(findLocation);
 		String location = results.toString();
+		System.out.println(location);
 		return location;
+		
 	}
 	
 	@Override
