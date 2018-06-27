@@ -16,6 +16,7 @@ public class JDBCCampgroundDAO implements CampgroundDAO {
 		this.jdbcTemplate = new JdbcTemplate(dataSource);
 	}
 	
+	@Override
 	public void getCampgrounds(long id) {
 		List<Campground> theCampgrounds = new ArrayList<>();
 		String getAllCampgrounds = ("SELECT * " + 
@@ -41,7 +42,7 @@ public class JDBCCampgroundDAO implements CampgroundDAO {
 		theCampground.setParkId(results.getLong("park_id"));
 		theCampground.setName(results.getString("name"));
 		theCampground.setOpenFromMonth(results.getInt("open_from_mm"));
-		theCampground.setOpenToMonth(results.getInt("open_until_mm"));
+		theCampground.setOpenToMonth(results.getInt("open_to_mm"));
 		theCampground.setDailyFee(results.getBigDecimal("daily_fee"));
 		return theCampground;
 	}

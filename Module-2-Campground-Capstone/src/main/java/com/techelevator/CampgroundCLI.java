@@ -5,6 +5,7 @@ import javax.sql.DataSource;
 import org.apache.commons.dbcp2.BasicDataSource;
 
 import com.techelevator.JDBCParkDAO;
+import com.techelevator.JDBCCampgroundDAO;
 
 
 public class CampgroundCLI {
@@ -34,6 +35,7 @@ public class CampgroundCLI {
 	private CampgroundDAO campgroundDAO;
 	private ReservationsDAO reservationsDAO;
 	private SiteDAO siteDAO;
+	private int parkNum;
 	
 
 	public static void main(String[] args) {
@@ -50,10 +52,12 @@ public class CampgroundCLI {
 		dataSource.setPassword("postgres1");
 		
 		parkDAO = new JDBCParkDAO(dataSource);
+		campgroundDAO = new JDBCCampgroundDAO(dataSource);
 		
 	}
 	
 	public void run() {
+		
 		while(true) {
 			System.out.println("Main Menu" + '\n' + 
 					           "---------" + '\n' +'\n' +
@@ -62,14 +66,17 @@ public class CampgroundCLI {
 			if(choice.equals(MAIN_MENU_OPTIONS_ACADIA)) {
 				//INSERT DISPLAY METHOD WITH ACADIA PARAMETER
 					parkDAO.getParkInfo(1);
+					parkNum = 1;
 			}
 			if(choice.equals(MAIN_MENU_OPTIONS_ARCHES)) {
 				//INSERT DISPLAY METHOD WITH ARCHES PARAMETER
 				parkDAO.getParkInfo(2);
+				parkNum = 2;
 			}
 			if(choice.equals(MAIN_MENU_OPTIONS_CNVP)) {
 				//INSERT DISPLAY METHOD WITH CNVP PARAMETER
 				parkDAO.getParkInfo(3);
+				parkNum = 3;
 			}
 			if(choice.equals(MAIN_MENU_OPTIONS_EXIT)) {
 				break;	//ENDS PROGRAM
@@ -80,6 +87,7 @@ public class CampgroundCLI {
 				if (choice.equals(PARK_INFO_OPTIONS_VIEW)) {
 					while (true) {
 						//INSERT DISPLAY FOR CAMPGROUNDS
+						campgroundDAO.getCampgrounds(parkNum);
 						System.out.println("\n" + "Select a Command");
 						choice = (String)menu.getChoiceFromOptions(CAMPGROUND_ALL_MENU_OPTIONS);
 						if (choice.equals(CAMPGROUND_OPTIONS_SEARCH)) {
