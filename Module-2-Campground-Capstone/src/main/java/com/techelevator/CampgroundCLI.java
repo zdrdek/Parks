@@ -65,9 +65,11 @@ public class CampgroundCLI {
 			}
 			if(choice.equals(MAIN_MENU_OPTIONS_ARCHES)) {
 				//INSERT DISPLAY METHOD WITH ARCHES PARAMETER
+				parkDAO.getParkInfo(2);
 			}
 			if(choice.equals(MAIN_MENU_OPTIONS_CNVP)) {
 				//INSERT DISPLAY METHOD WITH CNVP PARAMETER
+				parkDAO.getParkInfo(3);
 			}
 			if(choice.equals(MAIN_MENU_OPTIONS_EXIT)) {
 				break;	//ENDS PROGRAM
