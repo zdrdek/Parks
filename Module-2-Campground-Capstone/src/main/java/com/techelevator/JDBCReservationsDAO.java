@@ -4,7 +4,12 @@ import org.springframework.jdbc.support.rowset.SqlRowSet;
 
 public class JDBCReservationsDAO implements ReservationsDAO {
 	
-	
+	public void searchForReservations() {
+		
+	}
+	public void availableReservations() {
+		
+	}
 	
 	private Reservations mapRowToReservations(SqlRowSet results) {
 		Reservations theReservations = new Reservations();
