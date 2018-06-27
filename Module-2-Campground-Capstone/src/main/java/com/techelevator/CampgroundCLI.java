@@ -49,7 +49,7 @@ public class CampgroundCLI {
 		dataSource.setUsername("postgres");
 		dataSource.setPassword("postgres1");
 		
-//		parkDAO = new JDBCParkDAO(dataSource);
+		parkDAO = new JDBCParkDAO(dataSource);
 		
 	}
 	
@@ -60,7 +60,11 @@ public class CampgroundCLI {
 					           "Select a Park for further details:");
 			String choice = (String)menu.getChoiceFromOptions(PARKS_ALL_MENU_OPTIONS);
 			if(choice.equals(MAIN_MENU_OPTIONS_ACADIA)) {
+<<<<<<< HEAD
 				//INSERT DISPLAY METHOD WITH ACADIA PARAMETER
+=======
+				parkDAO.getLocation(1);
+>>>>>>> 557c32ce80f423500fdc2e65fa7bc1a6d478d32b
 			}
 			if(choice.equals(MAIN_MENU_OPTIONS_ARCHES)) {
 				//INSERT DISPLAY METHOD WITH ARCHES PARAMETER

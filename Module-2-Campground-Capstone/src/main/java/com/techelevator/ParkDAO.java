@@ -6,7 +6,7 @@ public interface ParkDAO {
 
 	public List<Park> getAvailableParks();
 
-	public String getLocation();
+	public String getLocation(int parkID);
 	
 	public String getDateEstablished();
 
