@@ -1,5 +1,7 @@
 package com.techelevator;
 
+import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.util.Date;
 
 public class Reservations {
@@ -9,7 +11,8 @@ public class Reservations {
 	private String name;
 	private Date fromDate;
 	private Date toDate;
-	private Date dateEntered;
+	private LocalDate dateEntered;
+	private BigDecimal dailyFee;
 	
 	public Long getReservationId() {
 		return reservationId;
@@ -41,12 +44,20 @@ public class Reservations {
 	public void setToDate(Date toDate) {
 		this.toDate = toDate;
 	}
-	public Date getDateEntered() {
+	public LocalDate getDateEntered() {
 		return dateEntered;
 	}
-	public void setDateEntered(Date dateEntered) {
+	public void setDateEntered(LocalDate dateEntered) {
 		this.dateEntered = dateEntered;
 	}
+	public BigDecimal getDailyFee() {
+		return dailyFee;
+	}
+	public void setDailyFee(BigDecimal dailyFee) {
+		this.dailyFee = dailyFee;
+	}
+	
+	
 	
 	
 
