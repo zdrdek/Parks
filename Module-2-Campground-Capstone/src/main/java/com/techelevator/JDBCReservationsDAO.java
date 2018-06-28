@@ -53,12 +53,13 @@ public class JDBCReservationsDAO implements ReservationsDAO {
 		}
 		LocalDate localDepartureDate = LocalDate.parse(departureDateS);
 		long daysBetween = ChronoUnit.DAYS.between(localArrivalDate, localDepartureDate);
+		BigDecimal BDDaysBetween = new BigDecimal(daysBetween);
 		System.out.println("\n" + "Results Matching Your Search Criteria");
 		List<Reservations> theReservations = new ArrayList<>();
 		List<Site> theSites = new ArrayList<>();
 		List<Campground> theCampgrounds = new ArrayList<>();
-		String getAvailableReservations = "SELECT site.site_id, site.max_occupancy, site.accessible, site.max_rv_length, site.utilities,"
-											+ "campground.daily_fee * ? \n" + 
+		String getAvailableReservations = "SELECT DISTINCT site.site_id, site.max_occupancy, site.accessible, site.max_rv_length, site.utilities,"
+											+ "campground.daily_fee\n" + 
 											"FROM site\n" + 
 											"JOIN reservation\n" + 
 											"ON site.site_id = reservation.site_id\n" + 
@@ -71,7 +72,7 @@ public class JDBCReservationsDAO implements ReservationsDAO {
 											"                 WHERE '2018-07-26' <= reservation.to_date \n" + 
 											"                 AND '2018-08-05' >= reservation.from_date)\n" + 
 											"LIMIT 5;";
-		SqlRowSet results = jdbcTemplate.queryForRowSet(getAvailableReservations, daysBetween, campgroundNumber);
+		SqlRowSet results = jdbcTemplate.queryForRowSet(getAvailableReservations, campgroundNumber);
 		System.out.println("Site No.     Max Occupancy     Handicap Accessible     Max RV Length     Utilities     Cost");
 		while (results.next()) {
 			Site theSite = mapRowToSite(results);
@@ -85,7 +86,7 @@ public class JDBCReservationsDAO implements ReservationsDAO {
 					theSite.getIsAccessible() + "     " + 
 			                   theSite.getMaxRVLength() + "     " +
 					theSite.getHasUtilities() + "     " +
-			                   theCampground.getDailyFee());
+			                   theCampground.getDailyFee().multiply(BDDaysBetween));
 		}
 		
 		
