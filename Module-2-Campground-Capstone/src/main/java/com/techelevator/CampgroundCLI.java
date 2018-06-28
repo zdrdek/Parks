@@ -104,7 +104,7 @@ public class CampgroundCLI {
 				}
 				if (choice.equals(PARK_INFO_OPTIONS_SEARCH)) {
 					campgroundDAO.getCampgrounds(parkNum);
-					reservationsDAO.availableReservations();
+					reservationsDAO.searchForReservations();
 					//move into search for campground reservation
 				}
 				if (choice.equals(PARK_INFO_OPTIONS_RETURN)) {

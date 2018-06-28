@@ -36,7 +36,7 @@ public class JDBCReservationsDAO implements ReservationsDAO {
 		System.out.println("What is the arrival date? yyyy-mm-dd");
 		String arrivalDateS = input.nextLine();
 		try {
-			arrivalDate = new SimpleDateFormat("yyyy-mm-dd").parse(arrivalDateS);
+			arrivalDate = new SimpleDateFormat("yyyy-MM-dd").parse(arrivalDateS);
 		} catch (ParseException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -46,7 +46,7 @@ public class JDBCReservationsDAO implements ReservationsDAO {
 		String departureDateS = input.nextLine();
 		Date departureDate = null;
 		try {
-			departureDate =new SimpleDateFormat("yyyy-mm-dd").parse(departureDateS);
+			departureDate =new SimpleDateFormat("yyyy-MM-dd").parse(departureDateS);
 		} catch (ParseException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -61,18 +61,16 @@ public class JDBCReservationsDAO implements ReservationsDAO {
 		String getAvailableReservations = "SELECT DISTINCT site.site_id, site.max_occupancy, site.accessible, site.max_rv_length, site.utilities,"
 											+ "campground.daily_fee\n" + 
 											"FROM site\n" + 
-											"JOIN reservation\n" + 
-											"ON site.site_id = reservation.site_id\n" + 
 											"JOIN campground\n" + 
 											"ON campground.campground_id = site.campground_id\n" + 
 											"WHERE campground.campground_id = ? AND site.site_id NOT IN(SELECT site.site_id\n" + 
 											"                                                     FROM site\n" + 
 											"                                                     JOIN reservation\n" + 
 											"                 ON site.site_id = reservation.site_id\n" + 
-											"                 WHERE '2018-07-26' <= reservation.to_date \n" + 
-											"                 AND '2018-08-05' >= reservation.from_date)\n" + 
+											"                 WHERE ? <= reservation.to_date \n" + 
+											"                 AND ? >= reservation.from_date)\n" + 
 											"LIMIT 5;";
-		SqlRowSet results = jdbcTemplate.queryForRowSet(getAvailableReservations, campgroundNumber);
+		SqlRowSet results = jdbcTemplate.queryForRowSet(getAvailableReservations, campgroundNumber, arrivalDate, departureDate);
 		System.out.println("Site No.     Max Occupancy     Handicap Accessible     Max RV Length     Utilities     Cost");
 		while (results.next()) {
 			Site theSite = mapRowToSite(results);
@@ -87,8 +85,37 @@ public class JDBCReservationsDAO implements ReservationsDAO {
 			                   theSite.getMaxRVLength() + "     " +
 					theSite.getHasUtilities() + "     " +
 			                   theCampground.getDailyFee().multiply(BDDaysBetween));
+			
+		}
+		System.out.println("Which site would you like to reserve? (Enter 0 to cancel)");
+		Long desiredSite = input.nextLong();
+		input.nextLine();
+		if (desiredSite == 0) {
+			return;
+		}
+		Reservations finalReservation = new Reservations();
+		System.out.println("What name should the reservation be under?");
+		String reserveName = input.nextLine();
+		LocalDate today = LocalDate.now();
+		String setNewReservation = ("INSERT INTO reservation(site_id, name, from_date, to_date, create_date)"
+												+ "VALUES(   ?,     ?,      ?,        ?,       ?)");
+		finalReservation.setSiteId(desiredSite);
+		finalReservation.setName(reserveName);
+		finalReservation.setFromDate(arrivalDate);
+		finalReservation.setToDate(departureDate);
+		finalReservation.setDateEntered(today);
+		jdbcTemplate.update(setNewReservation, finalReservation.getSiteId(), finalReservation.getName(), 
+				finalReservation.getFromDate(), finalReservation.getToDate(), finalReservation.getDateEntered());
+		String getNewResID = ("SELECT reservation_id FROM reservation "
+							+ "ORDER BY reservation_id DESC LIMIT 1");
+		SqlRowSet reserveID = jdbcTemplate.queryForRowSet(getNewResID);
+		Reservations justID = new Reservations();
+		while (reserveID.next()) {
+			justID = mapRowToResID(reserveID);
 		}
 		
+		
+		System.out.println("The Reservation has been made, your confirmation id is: " + justID.getReservationId() + '\n');
 		
 	}
 	
@@ -120,5 +147,10 @@ public class JDBCReservationsDAO implements ReservationsDAO {
 		theSite.setHasUtilities(results.getBoolean("utilities"));
 		return theSite;
 	}
+	private Reservations mapRowToResID(SqlRowSet results) {
+		Reservations resID = new Reservations();
+		resID.setReservationId(results.getLong("reservation_id"));
+		return resID;
 
+}
 }
