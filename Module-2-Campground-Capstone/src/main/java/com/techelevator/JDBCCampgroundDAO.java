@@ -23,14 +23,16 @@ public class JDBCCampgroundDAO implements CampgroundDAO {
 				"FROM campground " +
 				"WHERE park_id = ?");
 		SqlRowSet results = jdbcTemplate.queryForRowSet(getAllCampgrounds, id);
+		System.out.println("     Name   Open   Close   Daily Fee" + '\n' +
+				   "     ----   ----   -----   ---------");
 		while (results.next()) {
 			Campground theCampground = mapRowToCampgrounds(results);
 			theCampgrounds.add(theCampground);
-			System.out.println("#" + theCampground.getId() 
+			System.out.println('\n' + "#" + theCampground.getId() 
 			+ "   " + theCampground.getName() 
 			+ "   " + theCampground.getOpenFromMonth() 
 			+ "   " + theCampground.getOpenToMonth() 
-			+ "   " + theCampground.getDailyFee());
+			+ "   " + "$" + theCampground.getDailyFee());
 			
 		}
 		
