@@ -91,6 +91,8 @@ public class CampgroundCLI {
 						System.out.println("\n" + "Select a Command");
 						choice = (String)menu.getChoiceFromOptions(CAMPGROUND_ALL_MENU_OPTIONS);
 						if (choice.equals(CAMPGROUND_OPTIONS_SEARCH)) {
+							campgroundDAO.getCampgrounds(parkNum);
+							//reservationDAO.getReservations
 							//move into search for campground reservation
 						}
 						if (choice.equals(CAMPGROUND_OPTIONS_RETURN)) {
