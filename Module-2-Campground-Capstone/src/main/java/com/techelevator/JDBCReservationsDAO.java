@@ -28,14 +28,15 @@ public class JDBCReservationsDAO implements ReservationsDAO {
 		Scanner input = new Scanner(System.in);
 		System.out.println("Which campground (enter 0 to cancel)? _");
 		long campgroundNumber = input.nextLong();
+		input.nextLine();
 		if (campgroundNumber == 0) {
 			return;
 		}
+		Date arrivalDate = null;
 		System.out.println("What is the arrival date? yyyy-mm-dd");
 		String arrivalDateS = input.nextLine();
-		Date arrivalDate = null;
 		try {
-			arrivalDate =new SimpleDateFormat("yyyy-mm-dd").parse(arrivalDateS);
+			arrivalDate = new SimpleDateFormat("yyyy-mm-dd").parse(arrivalDateS);
 		} catch (ParseException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -55,8 +56,9 @@ public class JDBCReservationsDAO implements ReservationsDAO {
 		System.out.println("\n" + "Results Matching Your Search Criteria");
 		List<Reservations> theReservations = new ArrayList<>();
 		List<Site> theSites = new ArrayList<>();
+		List<Campground> theCampgrounds = new ArrayList<>();
 		String getAvailableReservations = "SELECT site.site_id, site.max_occupancy, site.accessible, site.max_rv_length, site.utilities,"
-											+ "campgroun.daily_fee * ? \n" + 
+											+ "campground.daily_fee * ? \n" + 
 											"FROM site\n" + 
 											"JOIN reservation\n" + 
 											"ON site.site_id = reservation.site_id\n" + 
@@ -70,46 +72,48 @@ public class JDBCReservationsDAO implements ReservationsDAO {
 											"                 AND '2018-08-05' >= reservation.from_date)\n" + 
 											"LIMIT 5;";
 		SqlRowSet results = jdbcTemplate.queryForRowSet(getAvailableReservations, daysBetween, campgroundNumber);
-		System.out.println("Results Matching Your Search Criteria:");
 		System.out.println("Site No.     Max Occupancy     Handicap Accessible     Max RV Length     Utilities     Cost");
 		while (results.next()) {
 			Site theSite = mapRowToSite(results);
 			theSites.add(theSite);
 			Reservations theReservation = mapRowToReservations(results);
 			theReservations.add(theReservation);
+			Campground theCampground = mapRowToCampground(results);
+			theCampgrounds.add(theCampground);
 			System.out.println(theReservation.getSiteId() + "     " +
 			                   theSite.getMaxOccupancy() + "     " +
 					theSite.getIsAccessible() + "     " + 
 			                   theSite.getMaxRVLength() + "     " +
 					theSite.getHasUtilities() + "     " +
-			                   theReservation.getDailyFee());
+			                   theCampground.getDailyFee());
 		}
 		
 		
 	}
 	
-	public void availableReservations() {
-		
+	private Campground mapRowToCampground(SqlRowSet results) {
+		Campground theCampground = new Campground();
+		theCampground.setDailyFee(results.getBigDecimal("daily_fee"));
+		return theCampground;
 	}
-	
 	private Reservations mapRowToReservations(SqlRowSet results) {
 		Reservations theReservations = new Reservations();
-		theReservations.setReservationId(results.getLong("reservation_id"));
+		//theReservations.setReservationId(results.getLong("reservation_id"));
 		theReservations.setSiteId(results.getLong("site_id"));
-		theReservations.setName(results.getString("name"));
-		theReservations.setFromDate(results.getDate("from_date"));
-		theReservations.setToDate(results.getDate("to_date"));
-		theReservations.setDateEntered(LocalDate.now());
-		theReservations.setDailyFee(results.getBigDecimal("daily_fee"));
+		//theReservations.setName(results.getString("name"));
+		//theReservations.setFromDate(results.getDate("from_date"));
+		//theReservations.setToDate(results.getDate("to_date"));
+		//theReservations.setDateEntered(LocalDate.now());
+		//theReservations.setDailyFee(results.getBigDecimal("campground.daily_fee"));
 		return theReservations;
 	}
 	private Site mapRowToSite(SqlRowSet results) {
 		Site theSite = new Site();
 		theSite.setSiteId(results.getLong("site_id"));
-		theSite.setCampgroundId(results.getLong("campground_id"));
-		theSite.setSiteNumber(results.getLong("site_number"));
+		//theSite.setCampgroundId(results.getLong("campground.campground_id"));
+		//theSite.setSiteNumber(results.getLong("site_number"));
 		theSite.setMaxOccupancy(results.getLong("max_occupancy"));
-		theSite.setCampgroundId(results.getLong("campground_id"));
+		//theSite.setCampgroundId(results.getLong("campground_id"));
 		theSite.setIsAccessible(results.getBoolean("accessible"));
 		theSite.setMaxRVLength(results.getInt("max_rv_length"));
 		theSite.setHasUtilities(results.getBoolean("utilities"));

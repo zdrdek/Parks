@@ -53,6 +53,7 @@ public class CampgroundCLI {
 		
 		parkDAO = new JDBCParkDAO(dataSource);
 		campgroundDAO = new JDBCCampgroundDAO(dataSource);
+		reservationsDAO = new JDBCReservationsDAO(dataSource);
 		
 	}
 	
@@ -92,7 +93,7 @@ public class CampgroundCLI {
 						choice = (String)menu.getChoiceFromOptions(CAMPGROUND_ALL_MENU_OPTIONS);
 						if (choice.equals(CAMPGROUND_OPTIONS_SEARCH)) {
 							campgroundDAO.getCampgrounds(parkNum);
-							//reservationDAO.getReservations
+							reservationsDAO.searchForReservations();
 							//move into search for campground reservation
 						}
 						if (choice.equals(CAMPGROUND_OPTIONS_RETURN)) {
@@ -102,6 +103,8 @@ public class CampgroundCLI {
 					continue;
 				}
 				if (choice.equals(PARK_INFO_OPTIONS_SEARCH)) {
+					campgroundDAO.getCampgrounds(parkNum);
+					reservationsDAO.availableReservations();
 					//move into search for campground reservation
 				}
 				if (choice.equals(PARK_INFO_OPTIONS_RETURN)) {
