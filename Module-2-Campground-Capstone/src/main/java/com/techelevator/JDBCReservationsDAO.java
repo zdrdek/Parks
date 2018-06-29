@@ -71,7 +71,8 @@ public class JDBCReservationsDAO implements ReservationsDAO {
 											"                 AND ? >= reservation.from_date)\n" + 
 											"LIMIT 5;";
 		SqlRowSet results = jdbcTemplate.queryForRowSet(getAvailableReservations, campgroundNumber, arrivalDate, departureDate);
-		System.out.println("Site No.     Max Occupancy     Handicap Accessible     Max RV Length     Utilities     Cost");
+		System.out.println("Site No.     Max Occupancy     Handicap Accessible     Max RV Length     Utilities     Total Cost" + '\n' + 
+				           "--------     -------------     -------------------     -------------     ---------     ----------");
 		while (results.next()) {
 			Site theSite = mapRowToSite(results);
 			theSites.add(theSite);
@@ -79,11 +80,11 @@ public class JDBCReservationsDAO implements ReservationsDAO {
 			theReservations.add(theReservation);
 			Campground theCampground = mapRowToCampground(results);
 			theCampgrounds.add(theCampground);
-			System.out.println(theReservation.getSiteId() + "     " +
+			System.out.println("# " + theReservation.getSiteId() + "               " +
 			                   theSite.getMaxOccupancy() + "     " +
 					theSite.getIsAccessible() + "     " + 
 			                   theSite.getMaxRVLength() + "     " +
-					theSite.getHasUtilities() + "     " +
+					theSite.getHasUtilities() + "     " + "$" +
 			                   theCampground.getDailyFee().multiply(BDDaysBetween));
 			
 		}
@@ -116,6 +117,7 @@ public class JDBCReservationsDAO implements ReservationsDAO {
 		
 		
 		System.out.println("The Reservation has been made, your confirmation id is: " + justID.getReservationId() + '\n');
+		return;
 		
 	}
 	

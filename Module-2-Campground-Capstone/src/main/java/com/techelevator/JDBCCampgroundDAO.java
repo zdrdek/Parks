@@ -23,16 +23,16 @@ public class JDBCCampgroundDAO implements CampgroundDAO {
 				"FROM campground " +
 				"WHERE park_id = ?");
 		SqlRowSet results = jdbcTemplate.queryForRowSet(getAllCampgrounds, id);
-		System.out.println("     Name                       Open   Close   Daily Fee" + '\n' +
-				           "     ----                       ----   -----   ---------");
+		System.out.printf("       " + String.format("%-30s", "Name") + String.format("%-25s", "Open Month") + String.format("%-22s", "Close Month") + String.format("%-20s", "Daily Fee")+ '\n' +
+				          "       " + String.format("%-30s", "----") + String.format("%-25s", "----------") + String.format("%-22s", "-----------") + String.format("%-20s", "---------"));
 		while (results.next()) {
 			Campground theCampground = mapRowToCampgrounds(results);
 			theCampgrounds.add(theCampground);
 			System.out.println('\n' + "#" + theCampground.getId() 
-			+ "   " + String.format("%-25s", theCampground.getName()) 
-			+ "   " + String.format("%-3s", theCampground.getOpenFromMonth())
-			+ "   " + String.format("%-7s", theCampground.getOpenToMonth()) 
-			+ "   " + "$" + String.format("%-7s", theCampground.getDailyFee()));
+			+ String.format("%-40s", theCampground.getName()) 
+			+ String.format("%-25s", theCampground.getOpenFromMonth())
+			+ String.format("%-19s", theCampground.getOpenToMonth()) 
+			+ "$" + String.format("%-10s", theCampground.getDailyFee()));
 			
 		}
 		
