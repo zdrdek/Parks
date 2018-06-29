@@ -35,6 +35,7 @@ public class JDBCReservationsDAO implements ReservationsDAO {
 		Date arrivalDate = null;
 		System.out.println("What is the arrival date? yyyy-mm-dd");
 		String arrivalDateS = input.nextLine();
+		int arrivalMonth = Integer.parseInt(arrivalDateS.substring(5, 7));
 		try {
 			arrivalDate = new SimpleDateFormat("yyyy-MM-dd").parse(arrivalDateS);
 		} catch (ParseException e) {
@@ -44,6 +45,7 @@ public class JDBCReservationsDAO implements ReservationsDAO {
 		LocalDate localArrivalDate = LocalDate.parse(arrivalDateS);
 		System.out.println("What is the departure date? yyyy-mm-dd");
 		String departureDateS = input.nextLine();
+		int departureMonth = Integer.parseInt(departureDateS.substring(5, 7));
 		Date departureDate = null;
 		try {
 			departureDate =new SimpleDateFormat("yyyy-MM-dd").parse(departureDateS);
@@ -59,7 +61,7 @@ public class JDBCReservationsDAO implements ReservationsDAO {
 		List<Site> theSites = new ArrayList<>();
 		List<Campground> theCampgrounds = new ArrayList<>();
 		String getAvailableReservations = "SELECT DISTINCT site.site_id, site.max_occupancy, site.accessible, site.max_rv_length, site.utilities,"
-											+ "campground.daily_fee\n" + 
+											+ "campground.daily_fee, campground.open_from_mm, campground.open_to_mm\n" + 
 											"FROM site\n" + 
 											"JOIN campground\n" + 
 											"ON campground.campground_id = site.campground_id\n" + 
@@ -73,6 +75,7 @@ public class JDBCReservationsDAO implements ReservationsDAO {
 		SqlRowSet results = jdbcTemplate.queryForRowSet(getAvailableReservations, campgroundNumber, arrivalDate, departureDate);
 		System.out.println("Site No.     Max Occupancy     Handicap Accessible     Max RV Length     Utilities     Total Cost" + '\n' + 
 				           "--------     -------------     -------------------     -------------     ---------     ----------");
+		int outputCounter = 0;
 		while (results.next()) {
 			Site theSite = mapRowToSite(results);
 			theSites.add(theSite);
@@ -80,13 +83,20 @@ public class JDBCReservationsDAO implements ReservationsDAO {
 			theReservations.add(theReservation);
 			Campground theCampground = mapRowToCampground(results);
 			theCampgrounds.add(theCampground);
-			System.out.println("# " + theReservation.getSiteId() + "               " +
-			                   theSite.getMaxOccupancy() + "     " +
-					theSite.getIsAccessible() + "     " + 
-			                   theSite.getMaxRVLength() + "     " +
-					theSite.getHasUtilities() + "     " + "$" +
-			                   theCampground.getDailyFee().multiply(BDDaysBetween));
-			
+			if (theCampground.getOpenFromMonth() < arrivalMonth && theCampground.getOpenFromMonth() < departureMonth 
+					&& theCampground.getOpenToMonth() > arrivalMonth && theCampground.getOpenToMonth() > departureMonth) {
+				System.out.println("# " + theReservation.getSiteId() + "               " +
+		                   theSite.getMaxOccupancy() + "     " +
+				theSite.getIsAccessible() + "     " + 
+		                   theSite.getMaxRVLength() + "     " +
+				theSite.getHasUtilities() + "     " + "$" +
+		                   theCampground.getDailyFee().multiply(BDDaysBetween));
+				outputCounter++;
+			}
+		}
+		if (outputCounter == 0) {
+			System.out.println("No campsites available for search parameters. Please try again.");
+			return;
 		}
 		System.out.println("Which site would you like to reserve? (Enter 0 to cancel)");
 		Long desiredSite = input.nextLong();
@@ -124,6 +134,8 @@ public class JDBCReservationsDAO implements ReservationsDAO {
 	private Campground mapRowToCampground(SqlRowSet results) {
 		Campground theCampground = new Campground();
 		theCampground.setDailyFee(results.getBigDecimal("daily_fee"));
+		theCampground.setOpenFromMonth(Integer.parseInt(results.getString("open_from_mm")));
+		theCampground.setOpenToMonth(Integer.parseInt(results.getString("open_to_mm")));
 		return theCampground;
 	}
 	private Reservations mapRowToReservations(SqlRowSet results) {
