@@ -23,11 +23,13 @@ public class CampgroundCLI {
 	private static final String PARK_INFO_OPTIONS_SEARCH = "Search for Reservations";
 	private static final String PARK_INFO_OPTIONS_ADVANCED_SEARCH = "Advanced Search for Reservations";
 	private static final String PARK_INFO_OPTIONS_SEARCH_ALL = "View Available Park-Wide Reservations";
+	private static final String PARK_INFO_OPTIONS_NEXT_THIRTY = "See Booked Reservations for next 30 days";
 	private static final String PARK_INFO_OPTIONS_RETURN = "Return to Previous Screen";
 	private static final String[] INFO_ALL_MENU_OPTIONS = new String[] {PARK_INFO_OPTIONS_VIEW,
 																			PARK_INFO_OPTIONS_SEARCH,
 																			PARK_INFO_OPTIONS_SEARCH_ALL,
 																			PARK_INFO_OPTIONS_ADVANCED_SEARCH,
+																			PARK_INFO_OPTIONS_NEXT_THIRTY,
 																			PARK_INFO_OPTIONS_RETURN};
 	private static final String CAMPGROUND_OPTIONS_SEARCH = "Search for Available Reservation";
 	private static final String CAMPGROUND_OPTIONS_RETURN = "Return to Previous Screen";
@@ -118,6 +120,10 @@ public class CampgroundCLI {
 				if (choice.equals(PARK_INFO_OPTIONS_SEARCH_ALL)) {
 					campgroundDAO.getCampgrounds(parkNum);
 					reservationsDAO.displayParkWideReservations(parkNum);
+				}
+				if (choice.equals(PARK_INFO_OPTIONS_NEXT_THIRTY)) {
+					campgroundDAO.getCampgrounds(parkNum);
+					reservationsDAO.nextThirtyDays(parkNum);
 				}
 				if (choice.equals(PARK_INFO_OPTIONS_RETURN)) {
 					break;

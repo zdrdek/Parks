@@ -382,14 +382,16 @@ public class JDBCReservationsDAO implements ReservationsDAO {
 				"ON cg.park_id = p.park_id\n" + 
 				"WHERE to_date <= current_date + 30 AND p.park_id = ?;");
 		SqlRowSet results = jdbcTemplate.queryForRowSet(nextThirtyReserves, parkNum);
-		System.out.printf("Reservation ID" + "From Date" + "To Date" + '\n' +
-				          "--------------" + "---------" + "-------");
+		System.out.printf(String.format("%-20s", "Reservation ID") + String.format("%-20s", "From Date") + String.format("%-20s", "To Date") + '\n' +
+				          String.format("%-20s", "--------------") + String.format("%-20s", "---------") + String.format("%-20s", "-------") + '\n');
 		
 		while(results.next()) {
 			Reservations theReservation = new Reservations();
 			theReservation = mapRowToNextThirty(results);
 			theReservations.add(theReservation);
-			System.out.println("# " + theReservation.getReservationId() + theReservation.getFromDate() + theReservation.getToDate());
+			System.out.println("# " + String.format("%-18s", theReservation.getReservationId()) + 
+					String.format("%-20s", theReservation.getFromDate()) + 
+					String.format("%-20s", theReservation.getToDate()));
 		}
 
 	}
