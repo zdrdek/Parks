@@ -9,13 +9,13 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.rowset.SqlRowSet;
 
 public class JDBCParkDAO implements ParkDAO {
-	
+
 	private JdbcTemplate jdbcTemplate;
 
 	public JDBCParkDAO(DataSource dataSource) {
 		this.jdbcTemplate = new JdbcTemplate(dataSource);
 	}
-	
+
 	@Override
 	public List<Park> getAvailableParks() {
 		List<Park> parkList = new ArrayList<>();
@@ -27,7 +27,7 @@ public class JDBCParkDAO implements ParkDAO {
 		}
 		return parkList;
 	}
-	
+
 	@Override
 	public void getParkInfo(int id) {
 		Park thePark = null;
@@ -36,61 +36,14 @@ public class JDBCParkDAO implements ParkDAO {
 		if (results.next()) {
 			thePark = mapRowToPark(results);
 		}
-		System.out.println('\n' + thePark.getName() + " National Park"+ '\n' +
-						   "Location:                         " + thePark.getLocation() + '\n' +
-						   "Established:                      " + thePark.getEstablishDate() + '\n' + 
-						   "Area:                             " + thePark.getArea() + " sq km " + '\n' + 
-						   "Annual Visitors:                  " + thePark.getVisitors() + '\n' + '\n' +
-						   thePark.getDescription());
-		
+		System.out.println('\n' + thePark.getName() + " National Park" + '\n' + "Location:                         "
+				+ thePark.getLocation() + '\n' + "Established:                      " + thePark.getEstablishDate()
+				+ '\n' + "Area:                             " + thePark.getArea() + " sq km " + '\n'
+				+ "Annual Visitors:                  " + thePark.getVisitors() + '\n' + '\n'
+				+ thePark.getDescription());
+
 	}
-//	
-//	@Override
-//	public String getLocation(int parkID) {
-//		String findLocation = ("SELECT location " + 
-//				"FROM park " + 
-//				"WHERE park_id = ?");
-//		SqlRowSet results = jdbcTemplate.queryForRowSet(findLocation);
-//		String location = results.toString();
-//		System.out.println(location);
-//		return location;
-//		
-//	}
-//	
-//	@Override
-//	public String getDateEstablished() {
-//		String findDateEstablished = ("SELECT establish_date " + 
-//				"FROM park " + 
-//				"WHERE park_id = ?");
-//		SqlRowSet results = jdbcTemplate.queryForRowSet(findDateEstablished);
-//		String dateEstablished = results.toString();
-//		dateEstablished = dateEstablished.concat("/" + dateEstablished.substring(0, 4));
-//		dateEstablished = dateEstablished.substring(5).replace('-', '/');
-//		return dateEstablished;
-//	}
-//	
-//	@Override
-//	public String getArea() {
-//		String findArea = ("SELECT area " + 
-//				"FROM park " + 
-//				"WHERE park_id = 1");
-//		SqlRowSet results = jdbcTemplate.queryForRowSet(findArea);
-//		String area = results.toString();
-//		ArrayList<Character> arealist = new ArrayList<>();
-//		for (int i = 0; i < area.length(); i++) {
-//			arealist.add(area.charAt(i));
-//		}
-//		int size = area.length();
-//		int commas = size / 3;
-//		if (size % 3 == 0 && size > 3) {
-//			for (int i = 3; i < size; i = i + 3) {
-//				arealist.add(i, ',');
-//			}
-//		}
-//		return area;
-//		
-//	}
-	
+
 	private Park mapRowToPark(SqlRowSet results) {
 		Park thePark = new Park();
 		thePark.setParkId(results.getLong("park_id"));
@@ -102,7 +55,5 @@ public class JDBCParkDAO implements ParkDAO {
 		thePark.setDescription(results.getString("description"));
 		return thePark;
 	}
-	
-	
 
 }
